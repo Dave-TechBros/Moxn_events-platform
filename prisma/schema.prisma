@@ -1,0 +1,127 @@
+// Prisma schema for the Moxn Events platform.
+// SQLite for local/dev; switch datasource to PostgreSQL for production (see README).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("ATTENDEE") // ATTENDEE | ORGANIZER | ADMIN
+  createdAt    DateTime @default(now())
+
+  events        Event[]
+  registrations Registration[]
+  reports       Report[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  color     String   @default("220 14% 50%") // HSL string for theming
+  createdAt DateTime @default(now())
+
+  events Event[]
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  title        String
+  description  String
+  // Stored in UTC. Display converted to `timezone` (event local) and viewer local.
+  startTime    DateTime
+  endTime      DateTime
+  timezone     String // IANA, e.g. "America/New_York"
+
+  venueName    String
+  address      String
+  lat          Float?
+  lng          Float?
+
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+
+  coverImage   String?
+
+  organizerId  String
+  organizer    User   @relation(fields: [organizerId], references: [id])
+
+  // DRAFT | SUBMITTED | APPROVED | REJECTED | CANCELLED
+  status       String   @default("DRAFT")
+  rejectionReason String?
+
+  // Overall capacity = sum of ticket type quantities (enforced in code).
+  capacity     Int      @default(0)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  publishedAt  DateTime?
+
+  ticketTypes  TicketType[]
+  registrations Registration[]
+  reports      Report[]
+}
+
+model TicketType {
+  id          String  @id @default(cuid())
+  eventId     String
+  event       Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  price       Int     @default(0) // stored in cents
+  quantity    Int // per-type limit
+  // Reserved count = HOLD + CONFIRMED registrations for this type.
+  soldCount   Int     @default(0)
+
+  registrations Registration[]
+}
+
+// Registration is the transaction record: HOLD -> CONFIRMED -> (CANCELLED | REFUNDED)
+model Registration {
+  id        String  @id @default(cuid())
+  eventId   String
+  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+
+  ticketTypeId String
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  quantity  Int     @default(1)
+  totalPrice Int    @default(0) // cents
+
+  // HOLD | CONFIRMED | CANCELLED | REFUNDED
+  status    String  @default("HOLD")
+  // Unique, unforgeable token embedded in the QR code.
+  qrToken   String  @unique
+  holdExpiresAt DateTime?
+
+  createdAt   DateTime  @default(now())
+  confirmedAt DateTime?
+  checkedInAt DateTime?
+  cancelledAt DateTime?
+
+  @@unique([eventId, userId, ticketTypeId, status])
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  reason    String
+  // OPEN | RESOLVED
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+}
