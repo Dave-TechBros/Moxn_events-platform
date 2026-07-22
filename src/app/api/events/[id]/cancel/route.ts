@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { json, errorResponse, handleError } from "@/lib/api";
 import { EVENT_STATUS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 // Cancel an event. Downstream effect: confirmed tickets can no longer be
 // used for check-in (the scanner rejects cancelled events). Holds are released.
 export async function POST(

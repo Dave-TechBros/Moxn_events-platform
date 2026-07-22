@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { json, errorResponse, handleError } from "@/lib/api";
 import { EVENT_STATUS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 // Organizer submits a draft for admin approval.
 export async function POST(
   _req: NextRequest,

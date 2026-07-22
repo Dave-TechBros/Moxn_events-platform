@@ -8,6 +8,8 @@ import { serializeEvent } from "@/lib/events";
 import { json, errorResponse, handleError } from "@/lib/api";
 import { EVENT_STATUS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 const PUBLIC_INCLUDE = {
   category: { select: { id: true, name: true, slug: true, color: true } },
   organizer: { select: { name: true } },

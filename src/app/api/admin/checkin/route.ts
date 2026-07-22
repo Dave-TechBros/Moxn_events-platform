@@ -5,6 +5,8 @@ import { extractToken } from "@/lib/qr";
 import { json, errorResponse, handleError } from "@/lib/api";
 import { EVENT_STATUS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 // Real-time scan-to-validate at the door.
 export async function POST(req: NextRequest) {
   try {

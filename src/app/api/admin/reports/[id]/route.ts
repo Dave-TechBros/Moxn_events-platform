@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { json, errorResponse, handleError } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 // Admin resolves a flagged report.
 export async function PATCH(
   _req: NextRequest,

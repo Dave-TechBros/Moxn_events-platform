@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { reportSchema } from "@/lib/validation";
 import { json, errorResponse, handleError } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 // Attendee / user reports a listing.
 export async function POST(
   req: NextRequest,

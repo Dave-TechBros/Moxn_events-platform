@@ -4,6 +4,8 @@ import { requireRole } from "@/lib/auth";
 import { json, errorResponse, handleError } from "@/lib/api";
 import { EVENT_STATUS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 const schema = {
   parse(body: any) {
     const action = body?.action;

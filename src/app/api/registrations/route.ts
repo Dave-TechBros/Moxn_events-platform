@@ -5,6 +5,8 @@ import { requireRole, logger } from "@/lib/auth";
 import { reserveHold } from "@/lib/capacity";
 import { json, errorResponse, handleError } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 // Step 1: place a HOLD (capacity reserved atomically). No payment yet.
 export async function POST(req: NextRequest) {
   try {

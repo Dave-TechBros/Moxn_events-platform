@@ -4,6 +4,8 @@ import { requireRole, logger } from "@/lib/auth";
 import { refundRegistration, cancelHold } from "@/lib/capacity";
 import { json, errorResponse, handleError } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 // Cancel a HOLD, or refund a CONFIRMED ticket (frees capacity).
 export async function POST(
   req: NextRequest,

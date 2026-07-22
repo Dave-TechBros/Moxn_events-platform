@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { generateQrDataUrl } from "@/lib/qr";
 import { json, errorResponse, handleError } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 // Reveal the QR pass for a confirmed registration.
 export async function GET(
   _req: NextRequest,

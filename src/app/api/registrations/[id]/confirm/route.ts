@@ -3,6 +3,8 @@ import { requireRole, logger } from "@/lib/auth";
 import { confirmHold } from "@/lib/capacity";
 import { json, handleError } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 // Step 2: confirm the hold -> issue the ticket (mock payment completed).
 export async function POST(
   req: NextRequest,

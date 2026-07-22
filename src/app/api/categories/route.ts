@@ -4,6 +4,8 @@ import { categorySchema } from "@/lib/validation";
 import { requireRole } from "@/lib/auth";
 import { json, errorResponse, handleError } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
